@@ -4,7 +4,15 @@ import { NoticesAddModalPage2 } from 'components/NoticesAddModalPage2/NoticesAdd
 import { Backdrop } from './NoticesAddModal.styled';
 import { useDispatch } from 'react-redux';
 import { postNewNotice } from 'redux/Notice/notice-operations';
-import { toast } from 'react-toastify';
+
+import { useForm } from 'react-hook-form';
+import {
+  schemaUserPageModalFirstPage,
+  schemaUserPageModalSecondPage,
+  notify,
+} from 'helpers/validator/validationInputs';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useEffect } from 'react';
 
 export const NoticesAddModal = ({
   handleBackdropClose,
@@ -19,6 +27,36 @@ export const NoticesAddModal = ({
   const [breed, setBreed] = useState('');
   const dispatch = useDispatch();
   const [nextPageOpen, setNextPageOpen] = useState(false);
+  const [schema, setSchema] = useState('');
+
+  useEffect(() => {
+    if (!nextPageOpen) {
+      setSchema(schemaUserPageModalFirstPage);
+    } else if (nextPageOpen) {
+      setSchema(schemaUserPageModalSecondPage);
+    }
+  }, [nextPageOpen]);
+
+  console.log(nextPageOpen);
+
+  const { register, handleSubmit } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  const onSubmit = data => {
+    const { breed, date, name, title } = data;
+    if (breed && date && name && title) {
+      handleNextPage();
+    } else {
+      setNextPageOpen(false);
+    }
+  };
+
+  const onError = e => {
+    console.log(e);
+    // const arr = ['title', 'name', 'date', 'breed'];
+    // arr.map(item => notify(e[item]?.message));
+  };
 
   const handleChangeParameter = e => {
     if (e.target.id === 'titleInput') {
@@ -77,7 +115,7 @@ export const NoticesAddModal = ({
       setIsModalOpen(false);
     }
     if (result.type === 'notices/new/rejected') {
-      toast.info('Something wrong');
+      // toast.info('Something wrong');
     }
   };
 
@@ -108,43 +146,32 @@ export const NoticesAddModal = ({
   };
 
   const handleNextPage = () => {
-    if (
-      category !== '' &&
-      title !== '' &&
-      name !== '' &&
-      birthday !== '' &&
-      breed !== ''
-    ) {
+    if (category !== '') {
       setNextPageOpen(true);
       document.querySelector('#mainPageModal').classList.add('hidden');
       if (nextPageOpen) {
         document.querySelector('#secondPageModal').classList.remove('hidden');
       }
-    } else if (
-      category === '' ||
-      title === '' ||
-      name === '' ||
-      birthday === '' ||
-      breed === ''
-    ) {
-      toast.info('All parameters must be set');
+    } else if (category === '') {
+      notify('Category must be set');
     }
   };
 
   return (
-    <form onSubmit={createPet}>
+    <form onSubmit={handleSubmit(onSubmit, onError)}>
       <Backdrop onClick={handleBackdropClose}>
         <NoticesAddModalPage1
+          register={register}
           pet={pet}
           setPet={setPet}
           handleBtnCLoseModal={handleBtnCLoseModal}
           handleChoiseCategory={handleChoiseCategory}
           handleChangeParameter={handleChangeParameter}
-          handleNextPage={handleNextPage}
         />
 
         {nextPageOpen && (
           <NoticesAddModalPage2
+            register={register}
             pet={pet}
             setPet={setPet}
             nextPageOpen={nextPageOpen}

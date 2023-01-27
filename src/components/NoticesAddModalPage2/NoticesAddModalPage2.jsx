@@ -28,7 +28,12 @@ import {
   NoticeLOcation,
 } from './NoticesAddModalPage2.styled';
 
-export const NoticesAddModalPage2 = ({ handleBtnCLoseModal, nextPageOpen }) => {
+export const NoticesAddModalPage2 = ({
+  handleBtnCLoseModal,
+  nextPageOpen,
+  register,
+  setNextPageOpen,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [notFoundCity, setNotFoundCity] = useState(false);
   const [arrayLocation, setArrayLocation] = useState('');
@@ -100,6 +105,7 @@ export const NoticesAddModalPage2 = ({ handleBtnCLoseModal, nextPageOpen }) => {
     if (nextPageOpen) {
       document.querySelector('#secondPageModal').classList.add('hidden');
     }
+    setNextPageOpen(false);
     document.querySelector('#mainPageModal').classList.remove('hidden');
   };
 
@@ -206,14 +212,14 @@ export const NoticesAddModalPage2 = ({ handleBtnCLoseModal, nextPageOpen }) => {
             Price<span style={{ color: '#F59256' }}>*</span>:
           </ParameterTitle>
           <SecondPageParameterInput
-            value={price}
-            onChange={handleChangePrice}
-            type="text"
-            name="priceInput"
-            id="priceInput"
-            placeholder="Type pet price"
-            pattern="^[1-9]+[0-9]*$"
-            required
+          // value={price}
+          // onChange={handleChangePrice}
+          // type="text"
+          // name="priceInput"
+          // id="priceInput"
+          // placeholder="Type pet price"
+          // pattern="^[1-9]+[0-9]*$"
+          // required
           />
         </ParameterItem>
         <ParameterItem>
@@ -248,15 +254,15 @@ export const NoticesAddModalPage2 = ({ handleBtnCLoseModal, nextPageOpen }) => {
         <ParameterItem>
           <ParameterTitle>Comments</ParameterTitle>
           <TextArea
-            onChange={handleChangeComments}
-            value={comments}
-            name="comments"
-            id="comments"
-            cols="30"
-            rows="10"
-            minLength={8}
-            maxLength={120}
-            required
+          // onChange={handleChangeComments}
+          // value={comments}
+          // name="comments"
+          // id="comments"
+          // cols="30"
+          // rows="10"
+          // minLength={8}
+          // maxLength={120}
+          // required
           ></TextArea>
         </ParameterItem>
       </SecondPageParameterList>

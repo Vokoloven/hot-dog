@@ -16,7 +16,7 @@ export const NoticesAddModalPage1 = ({
   handleBtnCLoseModal,
   handleChoiseCategory,
   handleChangeParameter,
-  handleNextPage,
+  register,
 }) => {
   return (
     <Modal id="mainPageModal">
@@ -58,14 +58,15 @@ export const NoticesAddModalPage1 = ({
             Tittle of ad<span>*</span>
           </ParameterTitle>
           <ParameterInput
-            id="titleInput"
-            onChange={handleChangeParameter}
+            {...register('title')}
             type="text"
             placeholder="Type title"
-            minLength={2}
-            maxLength={48}
-            required
-            pattern="^([a-zA-Z]{1}|([a-zA-Z]{1,}['-]?\s{1,}[a-zA-Z])+|\s{1,})+$"
+            // id="titleInput"
+            // onChange={handleChangeParameter}
+            // minLength={2}
+            // maxLength={48}
+            // required
+            // pattern="^([a-zA-Z]{1}|([a-zA-Z]{1,}['-]?\s{1,}[a-zA-Z])+|\s{1,})+$"
           />
         </li>
         <li>
@@ -73,13 +74,14 @@ export const NoticesAddModalPage1 = ({
             Name pet<span>*</span>
           </ParameterTitle>
           <ParameterInput
-            id="nameInput"
-            onChange={handleChangeParameter}
+            {...register('name')}
             type="text"
             placeholder="Type name pet"
-            pattern="^[a-zA-Z]+$"
-            minLength={2}
-            maxLength={16}
+            // id="nameInput"
+            // onChange={handleChangeParameter}
+            // pattern="^[a-zA-Z]+$"
+            // minLength={2}
+            // maxLength={16}
           />
         </li>
         <li>
@@ -87,10 +89,11 @@ export const NoticesAddModalPage1 = ({
             Date of birth<span>*</span>
           </ParameterTitle>
           <ParameterInput
-            id="birthInput"
-            onChange={handleChangeParameter}
+            {...register('date')}
             type="date"
             placeholder="Type date of birth"
+            // id="birthInput"
+            // onChange={handleChangeParameter}
           />
         </li>
         <li>
@@ -98,13 +101,14 @@ export const NoticesAddModalPage1 = ({
             Breed<span>*</span>
           </ParameterTitle>
           <ParameterInput
-            id="breedInput"
-            onChange={handleChangeParameter}
             type="text"
-            placeholder="Type breed"
-            minLength={2}
-            maxLength={24}
-            pattern="^([a-zA-Z]{1}|([a-zA-Z]{1,}['-]?\s{1,}[a-zA-Z])+|\s{1,})+$"
+            id="breedInput"
+            {...register('breed')}
+            // onChange={handleChangeParameter}
+            // placeholder="Type breed"
+            // minLength={2}
+            // maxLength={24}
+            // pattern="^([a-zA-Z]{1}|([a-zA-Z]{1,}['-]?\s{1,}[a-zA-Z])+|\s{1,})+$"
           />
         </li>
       </ParameterList>
@@ -115,9 +119,7 @@ export const NoticesAddModalPage1 = ({
           </ControlsBtn>
         </li>
         <li>
-          <ControlsBtn type="button" onClick={handleNextPage}>
-            Next
-          </ControlsBtn>
+          <ControlsBtn type="submit">Next</ControlsBtn>
         </li>
       </ControlsBtnList>
     </Modal>

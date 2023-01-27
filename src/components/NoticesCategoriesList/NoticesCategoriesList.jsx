@@ -192,8 +192,6 @@ const NoticiesCategoriesList = ({ searchQuery }) => {
 
       <NoticesList>
         {filteredPets().map(item => {
-          // console.log(item.location);
-          console.log([...item.location.split(',').splice(0, 1)]);
           const deleteBtnRule =
             ownNotices.find(ownId => ownId === item._id) && isLogin;
           const favBtnRule = favNotices.find(favId => favId === item._id);
