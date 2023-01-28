@@ -4,8 +4,8 @@ import { NoticesAddModalPage2 } from 'components/NoticesAddModalPage2/NoticesAdd
 import { Backdrop } from './NoticesAddModal.styled';
 import { useDispatch } from 'react-redux';
 import { postNewNotice } from 'redux/Notice/notice-operations';
-import { format } from 'date-fns';
 
+import { format } from 'date-fns';
 import { useForm } from 'react-hook-form';
 import {
   schemaUserPageModalFirstPage,
@@ -91,7 +91,6 @@ export const NoticesAddModal = ({
   };
 
   const onError = e => {
-    console.log(e);
     const arr = [
       'category',
       'title',
