@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { toast, ToastContainer } from 'react-toastify';
 import { postUserPet } from 'redux/User/user-operation';
 import {
   Backdrop,
@@ -25,35 +24,82 @@ import {
   PreviewImg,
 } from './UserPageModalAddPet.styled';
 
+import { format } from 'date-fns';
+import { useForm } from 'react-hook-form';
+import {
+  schemaUserModalAddPetFirstPage,
+  schemaUserModalAddPetSecondPage,
+  notify,
+} from 'helpers/validator/validationInputs';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useEffect } from 'react';
+
 export const UserPageModalAddPet = ({
   handleBackdropClose,
   setIsModalOpen,
 }) => {
   const dispatch = useDispatch();
+
   const [nextPageOpen, setNextPageOpen] = useState(false);
-
-  const [name, setName] = useState('');
-  const [birthday, setBirthday] = useState(null);
-  const [breed, setBreed] = useState('');
-  const [comments, setComments] = useState('');
   const [chooseAvatar, setChooseAvatar] = useState(false);
+  const [schema, setSchema] = useState('');
 
-  const handleOpenSecondPage = e => {
-    e.preventDefault();
-    if (name !== '' && birthday !== '' && breed !== '') {
-      setNextPageOpen(true);
-      document
-        .querySelector('#userAddOwnPetModalMainPage')
-        .classList.add('hidden');
-      if (nextPageOpen) {
-        document
-          .querySelector('#userAddOwnPetModalSecondPage')
-          .classList.remove('hidden');
+  useEffect(() => {
+    if (!nextPageOpen) {
+      setSchema(schemaUserModalAddPetFirstPage);
+    } else if (nextPageOpen) {
+      setSchema(schemaUserModalAddPetSecondPage);
+    }
+  }, [nextPageOpen]);
+
+  const { register, handleSubmit } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  const onSubmit = async data => {
+    const { name, date, breed, avatar, comments } = data;
+
+    if (name && date && breed) {
+      handleOpenSecondPage();
+    }
+
+    if (avatar && comments) {
+      const birthday = format(new Date(2020 - 12 - 20), 'dd.MM.yyyy');
+      const formData = new FormData();
+
+      const data = {
+        name,
+        birthday,
+        breed,
+        comments,
+      };
+
+      formData.append('avatar', avatar[0]);
+      formData.append('data', JSON.stringify(data));
+      const response = await dispatch(postUserPet(formData));
+      if (response.meta.requestStatus === 'fulfilled') {
+        setIsModalOpen(false);
+        document.querySelector('body').classList.remove('modal');
       }
-    } else {
-      toast.info('All parameters must be set');
     }
   };
+
+  const onError = e => {
+    const arr = ['name', 'date', 'breed', 'avatar', 'comments'];
+    arr.map(item => notify(e[item]?.message));
+  };
+
+  function handleOpenSecondPage(e) {
+    setNextPageOpen(true);
+    document
+      .querySelector('#userAddOwnPetModalMainPage')
+      .classList.add('hidden');
+    if (nextPageOpen) {
+      document
+        .querySelector('#userAddOwnPetModalSecondPage')
+        .classList.remove('hidden');
+    }
+  }
 
   function previewFile(e) {
     let preview = document.querySelector('#imagePreview');
@@ -71,8 +117,8 @@ export const UserPageModalAddPet = ({
     }
   }
 
-  const handleBackBtn = e => {
-    e.preventDefault();
+  const handleBackBtn = () => {
+    setNextPageOpen(false);
     document
       .querySelector('#userAddOwnPetModalSecondPage')
       .classList.add('hidden');
@@ -81,52 +127,8 @@ export const UserPageModalAddPet = ({
       .classList.remove('hidden');
   };
 
-  const handleNameChange = e => {
-    setName(e.target.value);
-  };
-  const handleBirthdayChange = e => {
-    setBirthday(convertDate(e.target.value));
-  };
-  const handleBreedChange = e => {
-    setBreed(e.target.value);
-  };
-  const handleCommentsChange = e => {
-    setComments(e.target.value);
-  };
-  const convertDate = date => {
-    if (!date?.length) return;
-    const d = date?.split('-');
-
-    return ([d[0], d[1], d[2]] = [d[2], d[1], d[0]].join('.'));
-  };
-
-  const handleDoneAddPet = async e => {
-    e.preventDefault();
-    if (name !== '' && birthday !== '' && breed !== '' && comments !== '') {
-      const formData = new FormData();
-      formData.append('avatar', e.target.avatar.files[0]);
-      formData.append(
-        'data',
-        JSON.stringify({
-          name,
-          birthday,
-          breed,
-          comments,
-        })
-      );
-      const response = await dispatch(postUserPet(formData));
-      if (response.meta.requestStatus === 'fulfilled') {
-        setIsModalOpen(false);
-        document.querySelector('body').classList.remove('modal');
-      }
-    } else {
-      toast.info('All parameters must be set');
-    }
-  };
-
   return (
     <Backdrop onClick={handleBackdropClose}>
-      <ToastContainer autoClose={4000} />
       <ModalMainPage id="userAddOwnPetModalMainPage">
         <CloseBtn
           onClick={() => {
@@ -136,25 +138,21 @@ export const UserPageModalAddPet = ({
           <IconClose />
         </CloseBtn>
         <MainPageModalTitle>Add pet</MainPageModalTitle>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit, onError)}>
           <CategoryList>
             <li>
               <CategoryTitle>Name pet</CategoryTitle>
               <CategoryInput
                 type="text"
                 placeholder="Type name pet"
-                value={name}
-                onChange={handleNameChange}
-                pattern="^[a-zA-Z]+$"
-                minLength={2}
-                maxLength={16}
+                {...register('name')}
               />
             </li>
             <li>
               <CategoryTitle>Date of birth</CategoryTitle>
               <CategoryInput
                 type="date"
-                onChange={handleBirthdayChange}
+                {...register('date')}
                 placeholder="Type date of birth"
               />
             </li>
@@ -162,18 +160,14 @@ export const UserPageModalAddPet = ({
               <CategoryTitle>Breed</CategoryTitle>
               <CategoryInput
                 type="text"
-                value={breed}
-                onChange={handleBreedChange}
+                {...register('breed')}
                 placeholder="Type breed"
-                pattern="^[a-zA-Z]+$"
-                minLength={2}
-                maxLength={16}
               />
             </li>
           </CategoryList>
           <ControlsList>
             <li>
-              <ControlsBtn onClick={handleOpenSecondPage}>Next</ControlsBtn>
+              <ControlsBtn type="submit">Next</ControlsBtn>
             </li>
             <li>
               <ControlsBtn
@@ -199,7 +193,7 @@ export const UserPageModalAddPet = ({
             <IconClose />
           </CloseBtn>
           <SecondPageModalTitle>Add pet</SecondPageModalTitle>
-          <form onSubmit={handleDoneAddPet}>
+          <form onSubmit={handleSubmit(onSubmit, onError)}>
             <CategoryListSecondPage>
               <li style={{ display: 'block', textAlign: 'center' }}>
                 <CategoryTitleSecondPage>
@@ -208,12 +202,12 @@ export const UserPageModalAddPet = ({
                 <AvatarInputBox>
                   <IconPlus />
                   <AvatarInput
+                    {...register('avatar')}
                     onClick={() => {
                       setChooseAvatar(true);
                     }}
                     onChange={previewFile}
                     type="file"
-                    name="avatar"
                     id="fileInput"
                   />
                   <PreviewImg
@@ -235,14 +229,9 @@ export const UserPageModalAddPet = ({
               <li>
                 <CategoryCommentsTitle>Comments</CategoryCommentsTitle>
                 <TextArea
-                  onChange={handleCommentsChange}
-                  value={comments}
-                  name=""
-                  id=""
+                  {...register('comments')}
                   cols="30"
                   rows="10"
-                  minLength={8}
-                  maxLength={120}
                 ></TextArea>
               </li>
             </CategoryListSecondPage>

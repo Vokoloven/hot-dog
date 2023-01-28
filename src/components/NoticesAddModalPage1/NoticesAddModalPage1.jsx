@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
   Modal,
   IconClose,
@@ -10,14 +12,20 @@ import {
   ParameterInput,
   ControlsBtnList,
   ControlsBtn,
+  CategoryInput,
 } from './NoticesAddModalPage1.styled';
 
 export const NoticesAddModalPage1 = ({
   handleBtnCLoseModal,
-  handleChoiseCategory,
-  handleChangeParameter,
-  handleNextPage,
+  register,
+  setValue,
 }) => {
+  const [isActive, setIsActive] = useState('');
+
+  function changeButtonStatus(status) {
+    setIsActive(status);
+  }
+
   return (
     <Modal id="mainPageModal">
       <IconClose onClick={handleBtnCLoseModal} />
@@ -30,27 +38,41 @@ export const NoticesAddModalPage1 = ({
       <CategoryList>
         <li>
           <CategoryBtn
-            id="lostFound"
-            onClick={handleChoiseCategory}
+            onClick={() => {
+              setValue('category', 'lostFound');
+              changeButtonStatus('lostFound');
+            }}
             type="button"
+            className={isActive === 'lostFound' && 'active'}
           >
             lost/found
           </CategoryBtn>
         </li>
         <li>
           <CategoryBtn
-            id="inGoodHands"
-            onClick={handleChoiseCategory}
+            onClick={() => {
+              setValue('category', 'inGoodHands');
+              changeButtonStatus('inGoodHands');
+            }}
             type="button"
+            className={isActive === 'inGoodHands' && 'active'}
           >
             in good hands
           </CategoryBtn>
         </li>
         <li>
-          <CategoryBtn id="sell" onClick={handleChoiseCategory} type="button">
+          <CategoryBtn
+            onClick={() => {
+              setValue('category', 'sell');
+              changeButtonStatus('sell');
+            }}
+            type="button"
+            className={isActive === 'sell' && 'active'}
+          >
             sell
           </CategoryBtn>
         </li>
+        <CategoryInput {...register('category')} />
       </CategoryList>
       <ParameterList>
         <li>
@@ -58,14 +80,9 @@ export const NoticesAddModalPage1 = ({
             Tittle of ad<span>*</span>
           </ParameterTitle>
           <ParameterInput
-            id="titleInput"
-            onChange={handleChangeParameter}
+            {...register('title')}
             type="text"
             placeholder="Type title"
-            minLength={2}
-            maxLength={48}
-            required
-            pattern="^([a-zA-Z]{1}|([a-zA-Z]{1,}['-]?\s{1,}[a-zA-Z])+|\s{1,})+$"
           />
         </li>
         <li>
@@ -73,13 +90,9 @@ export const NoticesAddModalPage1 = ({
             Name pet<span>*</span>
           </ParameterTitle>
           <ParameterInput
-            id="nameInput"
-            onChange={handleChangeParameter}
+            {...register('name')}
             type="text"
             placeholder="Type name pet"
-            pattern="^[a-zA-Z]+$"
-            minLength={2}
-            maxLength={16}
           />
         </li>
         <li>
@@ -87,8 +100,7 @@ export const NoticesAddModalPage1 = ({
             Date of birth<span>*</span>
           </ParameterTitle>
           <ParameterInput
-            id="birthInput"
-            onChange={handleChangeParameter}
+            {...register('date')}
             type="date"
             placeholder="Type date of birth"
           />
@@ -97,15 +109,7 @@ export const NoticesAddModalPage1 = ({
           <ParameterTitle>
             Breed<span>*</span>
           </ParameterTitle>
-          <ParameterInput
-            id="breedInput"
-            onChange={handleChangeParameter}
-            type="text"
-            placeholder="Type breed"
-            minLength={2}
-            maxLength={24}
-            pattern="^([a-zA-Z]{1}|([a-zA-Z]{1,}['-]?\s{1,}[a-zA-Z])+|\s{1,})+$"
-          />
+          <ParameterInput type="text" id="breedInput" {...register('breed')} />
         </li>
       </ParameterList>
       <ControlsBtnList>
@@ -115,9 +119,7 @@ export const NoticesAddModalPage1 = ({
           </ControlsBtn>
         </li>
         <li>
-          <ControlsBtn type="button" onClick={handleNextPage}>
-            Next
-          </ControlsBtn>
+          <ControlsBtn type="submit">Next</ControlsBtn>
         </li>
       </ControlsBtnList>
     </Modal>

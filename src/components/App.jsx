@@ -7,6 +7,7 @@ import { getUserOperation } from 'redux/User/user-operation';
 import PrivateRouter from 'helpers/PrivateRoute/PrivateRoute';
 import Loader from './Loader/Loader';
 import { LoaderBox } from './Loader/Loader.styled';
+import { ToastContainer } from 'react-toastify';
 
 // import Layout from './Layout/Layout';
 // import NewsPage from 'pages/NewsPage/NewsPage';
@@ -37,62 +38,65 @@ export const App = () => {
   }, [authToken, dispatch]);
   const [searchQuery, setSearchQuery] = useState('');
   return (
-    <Suspense
-      fallback={
-        <LoaderBox>
-          <Loader />
-        </LoaderBox>
-      }
-    >
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route path="*" element={<NotFoundPage />} />
-          <Route index element={<Home />} />
-          <Route path="news" element={<NewsPage />} />
-          <Route
-            path="notices"
-            element={
-              <NoticesPage
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
+    <>
+      <ToastContainer />
+      <Suspense
+        fallback={
+          <LoaderBox>
+            <Loader />
+          </LoaderBox>
+        }
+      >
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route path="*" element={<NotFoundPage />} />
+            <Route index element={<Home />} />
+            <Route path="news" element={<NewsPage />} />
+            <Route
+              path="notices"
+              element={
+                <NoticesPage
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
+                />
+              }
+            >
+              <Route
+                path="sell"
+                element={<NoticiesCategoriesList searchQuery={searchQuery} />}
               />
-            }
-          >
+              <Route
+                path="lost-found"
+                element={<NoticiesCategoriesList searchQuery={searchQuery} />}
+              />
+              <Route
+                path="for-free"
+                element={<NoticiesCategoriesList searchQuery={searchQuery} />}
+              />
+              <Route
+                path="favorite"
+                element={<NoticiesCategoriesList searchQuery={searchQuery} />}
+              />
+              <Route
+                path="own"
+                element={<NoticiesCategoriesList searchQuery={searchQuery} />}
+              />
+            </Route>
+
+            <Route path="friends" element={<OurFriends />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="register" element={<RegisterPage />} />
             <Route
-              path="sell"
-              element={<NoticiesCategoriesList searchQuery={searchQuery} />}
-            />
-            <Route
-              path="lost-found"
-              element={<NoticiesCategoriesList searchQuery={searchQuery} />}
-            />
-            <Route
-              path="for-free"
-              element={<NoticiesCategoriesList searchQuery={searchQuery} />}
-            />
-            <Route
-              path="favorite"
-              element={<NoticiesCategoriesList searchQuery={searchQuery} />}
-            />
-            <Route
-              path="own"
-              element={<NoticiesCategoriesList searchQuery={searchQuery} />}
+              path="user"
+              element={
+                <PrivateRouter>
+                  <UserPage />
+                </PrivateRouter>
+              }
             />
           </Route>
-
-          <Route path="friends" element={<OurFriends />} />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={<RegisterPage />} />
-          <Route
-            path="user"
-            element={
-              <PrivateRouter>
-                <UserPage />
-              </PrivateRouter>
-            }
-          />
-        </Route>
-      </Routes>
-    </Suspense>
+        </Routes>
+      </Suspense>
+    </>
   );
 };

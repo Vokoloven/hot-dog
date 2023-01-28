@@ -140,6 +140,10 @@ export const ParameterTitle = styled.h3`
   }
 `;
 
+export const CategoryInput = styled('input')`
+  visibility: hidden;
+`;
+
 export const ParameterInput = styled.input`
   font-weight: 400;
   font-size: 14px;

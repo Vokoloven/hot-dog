@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { RegisterButtonLocation } from 'components/RegisterForm/RegisterForm.styled';
 import { LOCATIONWRAPPER } from 'components/User/UserCard/UserInfo/UserInfo.styled';
+import { useEffect } from 'react';
 import { useMemo, useState } from 'react';
 
 import {
@@ -26,33 +27,22 @@ import {
   PreviewImg,
   LocationListWrapper,
   NoticeLOcation,
+  BothSexInput,
 } from './NoticesAddModalPage2.styled';
 
-export const NoticesAddModalPage2 = ({ handleBtnCLoseModal, nextPageOpen }) => {
+export const NoticesAddModalPage2 = ({
+  handleBtnCLoseModal,
+  nextPageOpen,
+  register,
+  setNextPageOpen,
+  setValue,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [notFoundCity, setNotFoundCity] = useState(false);
   const [arrayLocation, setArrayLocation] = useState('');
-
-  // const [sex, setSex] = useState('');
-  const [comments, setComments] = useState('');
   const [location, setLocation] = useState('');
-  const [price, setPrice] = useState('');
   const [chooseAvatar, setChooseAvatar] = useState(false);
-
-  const handleSexChoose = e => {
-    if (e.target.id === 'sexInputMale') {
-      // setSex('male');
-      document.querySelector('#SexMaleActive').classList.add('active');
-      document.querySelector('#SexFemaleActive').classList.remove('active');
-      document.querySelector('#sexInputFemale').checked = false;
-    } else if (e.target.id === 'sexInputFemale') {
-      // setSex('female');
-      document.querySelector('#SexMaleActive').classList.remove('active');
-      document.querySelector('#SexFemaleActive').classList.add('active');
-      document.querySelector('#sexInputMale').checked = false;
-    }
-    e.target.checked = true;
-  };
+  const [sex, setSex] = useState('');
 
   const fetchProducts = useMemo(
     () => async search => {
@@ -89,17 +79,12 @@ export const NoticesAddModalPage2 = ({ handleBtnCLoseModal, nextPageOpen }) => {
       return;
     }
   };
-  const handleChangePrice = e => {
-    setPrice(e.target.value);
-  };
-  const handleChangeComments = e => {
-    setComments(e.target.value);
-  };
 
   const handleToBackPage = () => {
     if (nextPageOpen) {
       document.querySelector('#secondPageModal').classList.add('hidden');
     }
+    setNextPageOpen(false);
     document.querySelector('#mainPageModal').classList.remove('hidden');
   };
 
@@ -121,6 +106,7 @@ export const NoticesAddModalPage2 = ({ handleBtnCLoseModal, nextPageOpen }) => {
 
   const handleButtonClick = e => {
     setLocation(e.currentTarget.innerText);
+    setValue('location', e.currentTarget.innerText);
     setIsOpen(false);
   };
 
@@ -134,28 +120,29 @@ export const NoticesAddModalPage2 = ({ handleBtnCLoseModal, nextPageOpen }) => {
             The sex<span style={{ color: '#F59256' }}>*</span>:
           </ParameterTitle>
           <SexList style={{ display: 'flex' }}>
-            <SexItem>
+            <SexItem onClick={() => setSex('male')}>
               <MaleIcon />
               <SexInput
-                onClick={handleSexChoose}
-                type="checkbox"
-                name="sexMale"
-                id="sexInputMale"
-                value={'male'}
+                id="male"
+                type="button"
+                onClick={() => setValue('sex', 'male')}
               />
-              <SexText id="SexMaleActive">Male</SexText>
+              <SexText className={sex === 'male' ? 'active' : 'disabled'}>
+                Male
+              </SexText>
             </SexItem>
-            <SexItem>
+            <SexItem onClick={() => setSex('female')}>
               <FemaleIcon />
               <SexInput
-                onClick={handleSexChoose}
-                type="checkbox"
-                name="sexFemle"
-                id="sexInputFemale"
-                value={'female'}
+                id="male"
+                type="button"
+                onClick={() => setValue('sex', 'female')}
               />
-              <SexText id="SexFemaleActive">Female</SexText>
+              <SexText className={sex === 'female' ? 'active' : 'disabled'}>
+                Female
+              </SexText>
             </SexItem>
+            <BothSexInput {...register('sex')} />
           </SexList>
         </li>
         <LOCATIONWRAPPER>
@@ -165,10 +152,9 @@ export const NoticesAddModalPage2 = ({ handleBtnCLoseModal, nextPageOpen }) => {
             </ParameterTitle>
 
             <SecondPageParameterInput
-              value={location}
+              {...register('location')}
               onChange={handleLocationSet}
               type="text"
-              name="locationInput"
               id="locationInput"
               placeholder="Type pet location"
             />
@@ -206,14 +192,9 @@ export const NoticesAddModalPage2 = ({ handleBtnCLoseModal, nextPageOpen }) => {
             Price<span style={{ color: '#F59256' }}>*</span>:
           </ParameterTitle>
           <SecondPageParameterInput
-            value={price}
-            onChange={handleChangePrice}
-            type="text"
-            name="priceInput"
-            id="priceInput"
+            {...register('price')}
+            type="number"
             placeholder="Type pet price"
-            pattern="^[1-9]+[0-9]*$"
-            required
           />
         </ParameterItem>
         <ParameterItem>
@@ -221,12 +202,9 @@ export const NoticesAddModalPage2 = ({ handleBtnCLoseModal, nextPageOpen }) => {
           <AvatarInputBox>
             <IconPlus />
             <AvatarInput
-              onClick={() => {
-                setChooseAvatar(true);
-              }}
+              {...register('avatar')}
               onChange={previewFile}
               type="file"
-              name="fileInput"
               id="fileInput"
             />
             <PreviewImg
@@ -247,17 +225,7 @@ export const NoticesAddModalPage2 = ({ handleBtnCLoseModal, nextPageOpen }) => {
         </ParameterItem>
         <ParameterItem>
           <ParameterTitle>Comments</ParameterTitle>
-          <TextArea
-            onChange={handleChangeComments}
-            value={comments}
-            name="comments"
-            id="comments"
-            cols="30"
-            rows="10"
-            minLength={8}
-            maxLength={120}
-            required
-          ></TextArea>
+          <TextArea {...register('comments')}></TextArea>
         </ParameterItem>
       </SecondPageParameterList>
 
