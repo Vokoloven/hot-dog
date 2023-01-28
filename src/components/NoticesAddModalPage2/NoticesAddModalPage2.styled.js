@@ -114,7 +114,7 @@ export const FemaleIcon = styled(femaleIconPrimal)`
   width: 40px;
 `;
 
-export const SexInput = styled.input`
+export const SexInput = styled.button`
   position: absolute;
   opacity: 0;
   width: 40px;
@@ -122,6 +122,10 @@ export const SexInput = styled.input`
   left: 0;
   background-color: red;
   cursor: pointer;
+`;
+
+export const BothSexInput = styled('input')`
+  visibility: hidden;
 `;
 
 export const SexText = styled.p`

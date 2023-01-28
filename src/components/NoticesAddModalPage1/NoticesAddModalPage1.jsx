@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
   Modal,
   IconClose,
@@ -10,14 +12,20 @@ import {
   ParameterInput,
   ControlsBtnList,
   ControlsBtn,
+  CategoryInput,
 } from './NoticesAddModalPage1.styled';
 
 export const NoticesAddModalPage1 = ({
   handleBtnCLoseModal,
-  handleChoiseCategory,
-  handleChangeParameter,
   register,
+  setValue,
 }) => {
+  const [isActive, setIsActive] = useState('');
+
+  function changeButtonStatus(status) {
+    setIsActive(status);
+  }
+
   return (
     <Modal id="mainPageModal">
       <IconClose onClick={handleBtnCLoseModal} />
@@ -30,27 +38,41 @@ export const NoticesAddModalPage1 = ({
       <CategoryList>
         <li>
           <CategoryBtn
-            id="lostFound"
-            onClick={handleChoiseCategory}
+            onClick={() => {
+              setValue('category', 'lostFound');
+              changeButtonStatus('lostFound');
+            }}
             type="button"
+            className={isActive === 'lostFound' && 'active'}
           >
             lost/found
           </CategoryBtn>
         </li>
         <li>
           <CategoryBtn
-            id="inGoodHands"
-            onClick={handleChoiseCategory}
+            onClick={() => {
+              setValue('category', 'inGoodHands');
+              changeButtonStatus('inGoodHands');
+            }}
             type="button"
+            className={isActive === 'inGoodHands' && 'active'}
           >
             in good hands
           </CategoryBtn>
         </li>
         <li>
-          <CategoryBtn id="sell" onClick={handleChoiseCategory} type="button">
+          <CategoryBtn
+            onClick={() => {
+              setValue('category', 'sell');
+              changeButtonStatus('sell');
+            }}
+            type="button"
+            className={isActive === 'sell' && 'active'}
+          >
             sell
           </CategoryBtn>
         </li>
+        <CategoryInput {...register('category')} />
       </CategoryList>
       <ParameterList>
         <li>
@@ -61,12 +83,6 @@ export const NoticesAddModalPage1 = ({
             {...register('title')}
             type="text"
             placeholder="Type title"
-            // id="titleInput"
-            // onChange={handleChangeParameter}
-            // minLength={2}
-            // maxLength={48}
-            // required
-            // pattern="^([a-zA-Z]{1}|([a-zA-Z]{1,}['-]?\s{1,}[a-zA-Z])+|\s{1,})+$"
           />
         </li>
         <li>
@@ -77,11 +93,6 @@ export const NoticesAddModalPage1 = ({
             {...register('name')}
             type="text"
             placeholder="Type name pet"
-            // id="nameInput"
-            // onChange={handleChangeParameter}
-            // pattern="^[a-zA-Z]+$"
-            // minLength={2}
-            // maxLength={16}
           />
         </li>
         <li>
@@ -92,24 +103,13 @@ export const NoticesAddModalPage1 = ({
             {...register('date')}
             type="date"
             placeholder="Type date of birth"
-            // id="birthInput"
-            // onChange={handleChangeParameter}
           />
         </li>
         <li>
           <ParameterTitle>
             Breed<span>*</span>
           </ParameterTitle>
-          <ParameterInput
-            type="text"
-            id="breedInput"
-            {...register('breed')}
-            // onChange={handleChangeParameter}
-            // placeholder="Type breed"
-            // minLength={2}
-            // maxLength={24}
-            // pattern="^([a-zA-Z]{1}|([a-zA-Z]{1,}['-]?\s{1,}[a-zA-Z])+|\s{1,})+$"
-          />
+          <ParameterInput type="text" id="breedInput" {...register('breed')} />
         </li>
       </ParameterList>
       <ControlsBtnList>
