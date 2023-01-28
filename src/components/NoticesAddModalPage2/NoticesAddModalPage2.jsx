@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { RegisterButtonLocation } from 'components/RegisterForm/RegisterForm.styled';
 import { LOCATIONWRAPPER } from 'components/User/UserCard/UserInfo/UserInfo.styled';
-import { useEffect } from 'react';
 import { useMemo, useState } from 'react';
 
 import {
@@ -41,7 +40,7 @@ export const NoticesAddModalPage2 = ({
   const [notFoundCity, setNotFoundCity] = useState(false);
   const [arrayLocation, setArrayLocation] = useState('');
   const [location, setLocation] = useState('');
-  const [chooseAvatar, setChooseAvatar] = useState(false);
+  const [chooseAvatar] = useState(false);
   const [sex, setSex] = useState('');
 
   const fetchProducts = useMemo(
