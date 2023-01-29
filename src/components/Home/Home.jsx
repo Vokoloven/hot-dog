@@ -9,9 +9,7 @@ const Home = () => {
       <Container>
         <StyledTitle>Take good care of your small pets</StyledTitle>
       </Container>
-      <ContainerImg>
-        <StyledFrameImage />
-      </ContainerImg>
+      <StyledFrameImage />
     </>
   );
 };

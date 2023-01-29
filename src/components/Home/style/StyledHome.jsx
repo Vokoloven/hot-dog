@@ -44,7 +44,7 @@ export const StyledTitle = styled('h1')`
 export const StyledFrameImage = styled('div')`
   @media screen and (min-width: 320px) {
     max-width: 424px;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 90px);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: bottom center;
@@ -91,7 +91,7 @@ export const StyledFrameImage = styled('div')`
   }
   @media screen and (min-width: 1024px) {
     max-width: 1439px;
-    height: calc(100vh - 130px);
+    height: calc(100vh - 122px);
     background-position: bottom center;
     background-size: contain;
     background-repeat: no-repeat;
@@ -106,10 +106,11 @@ export const StyledFrameImage = styled('div')`
   }
   @media screen and (min-width: 1440px) {
     max-width: 2560px;
-    height: calc(100vh - 167px);
+    height: calc(100vh - 122px);
+    /* height: 100vh; */
     background-position: bottom center;
-    background-size: contain;
-    background-repeat: no-repeat;
+    background-size: cover;
+    /* background-repeat: no-repeat; */
     background-image: url(${FrameImage});
 
     @media (min-device-pixel-ratio: 2),
