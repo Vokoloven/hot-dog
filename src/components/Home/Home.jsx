@@ -1,7 +1,6 @@
 import { StyledFrameImage, StyledTitle } from './style/StyledHome';
 
 import { Container } from 'components/Container/Container';
-import { ContainerImg } from '../Container-img/ContainerImg';
 
 const Home = () => {
   return (
